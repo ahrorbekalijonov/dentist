@@ -1,0 +1,564 @@
+definitions:
+  models.AllAppointments:
+    properties:
+      appointments:
+        items:
+          $ref: '#/definitions/models.Appointment'
+        type: array
+    type: object
+  models.AllClients:
+    properties:
+      clients:
+        items:
+          $ref: '#/definitions/models.Client'
+        type: array
+    type: object
+  models.Appointment:
+    properties:
+      amount:
+        type: integer
+      clientId:
+        type: string
+      date:
+        type: string
+      diagnostics:
+        type: string
+      id:
+        type: string
+      treatment:
+        type: string
+    type: object
+  models.Client:
+    properties:
+      address:
+        type: string
+      birthDate:
+        type: string
+      fatherName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  models.Error:
+    properties:
+      error:
+        $ref: '#/definitions/models.StandartError'
+    type: object
+  models.New:
+    properties:
+      amount:
+        type: integer
+      appointmentId:
+        type: string
+      clientId:
+        type: string
+      clientName:
+        type: string
+      date:
+        type: string
+      diagnostics:
+        type: string
+      phoneNumber:
+        type: string
+      treatment:
+        type: string
+    type: object
+  models.ReqAppointment:
+    properties:
+      amount:
+        type: integer
+      clientId:
+        type: string
+      date:
+        type: string
+      diagnostics:
+        type: string
+      treatment:
+        type: string
+    type: object
+  models.ReqClient:
+    properties:
+      address:
+        type: string
+      birthDate:
+        type: string
+      fatherName:
+        type: string
+      lastName:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  models.ReqNew:
+    properties:
+      amount:
+        type: integer
+      clientName:
+        type: string
+      date:
+        type: string
+      diagnostics:
+        type: string
+      phoneNumber:
+        type: string
+      treatment:
+        type: string
+    type: object
+  models.StandartError:
+    properties:
+      error:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Dentist-backend
+  title: Dentist
+  version: "1.0"
+paths:
+  /v1/appointment:
+    delete:
+      consumes:
+      - application/json
+      description: Api for delete appointment
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: DeleteAppointment
+      tags:
+      - appointment
+    get:
+      consumes:
+      - application/json
+      description: Api for get a new appointment
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Appointment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAppointment
+      tags:
+      - appointment
+    post:
+      consumes:
+      - application/json
+      description: Api for creat a new appointment
+      parameters:
+      - description: CreateAppointment
+        in: body
+        name: Appointment
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReqAppointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Appointment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: CreateAppointment
+      tags:
+      - appointment
+    put:
+      consumes:
+      - application/json
+      description: Api for update appointment
+      parameters:
+      - description: Appointment
+        in: body
+        name: Appointment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Appointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Appointment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: UpdateAppointment
+      tags:
+      - appointment
+  /v1/appointmentid:
+    get:
+      consumes:
+      - application/json
+      description: Api for get appointment with client id
+      parameters:
+      - description: client_id
+        in: query
+        name: client_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AllAppointments'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAppointmentWithClientId
+      tags:
+      - appointment
+  /v1/appointmentnew:
+    post:
+      consumes:
+      - application/json
+      description: Api for creating a new client
+      parameters:
+      - description: CreateAppointmentWithClient
+        in: body
+        name: Client
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReqNew'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.New'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: CreateAppointmentWithClient
+      tags:
+      - appointment
+  /v1/appointments:
+    get:
+      consumes:
+      - application/json
+      description: Api for get all appointments
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AllAppointments'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAllAppointments
+      tags:
+      - appointment
+  /v1/appointmentsdate:
+    get:
+      consumes:
+      - application/json
+      description: Api for get appointments with date
+      parameters:
+      - description: integer
+        in: query
+        name: integer
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AllAppointments'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAppointmentsWithDate
+      tags:
+      - appointment
+  /v1/client:
+    delete:
+      consumes:
+      - application/json
+      description: Api for delete client
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: DeleteClient
+      tags:
+      - client
+    get:
+      consumes:
+      - application/json
+      description: Api for get client
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetClient
+      tags:
+      - client
+    post:
+      consumes:
+      - application/json
+      description: Api for creating a new client
+      parameters:
+      - description: CreateClient
+        in: body
+        name: Client
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReqClient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: CreateClient
+      tags:
+      - client
+    put:
+      consumes:
+      - application/json
+      description: Api for update client
+      parameters:
+      - description: UpdateClient
+        in: body
+        name: Client
+        required: true
+        schema:
+          $ref: '#/definitions/models.Client'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: UpdateClient
+      tags:
+      - client
+  /v1/clients:
+    get:
+      consumes:
+      - application/json
+      description: Api for get all clients
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AllClients'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAllClients
+      tags:
+      - client
+  /v1/count:
+    get:
+      consumes:
+      - application/json
+      description: Api for get all clients count
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetAllClientsCount
+      tags:
+      - client
+  /v1/search:
+    get:
+      consumes:
+      - application/json
+      description: Api for searching clients
+      parameters:
+      - description: SearchClients
+        in: query
+        name: str
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AllClients'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: SearchingClients
+      tags:
+      - client
+swagger: "2.0"
