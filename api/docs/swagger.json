@@ -201,6 +201,20 @@
                         "name": "client_id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -340,6 +354,20 @@
                         "type": "string",
                         "description": "integer",
                         "name": "integer",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     }
@@ -722,6 +750,12 @@
             "properties": {
                 "address": {
                     "type": "string"
+                },
+                "allAppointments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Appointment"
+                    }
                 },
                 "birthDate": {
                     "type": "string"

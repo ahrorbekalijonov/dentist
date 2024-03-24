@@ -31,22 +31,22 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 	}
 	Id := uuid.NewString()
 	response, err := h.storage.Client().CreateClient(&repo.Client{
-		Id:            Id,
-		Name:          req.Name,
-		LastName:      req.LastName,
-		FatherName:    req.FatherName,
-		PhoneNumber:   req.PhoneNumber,
-		Address:       req.Address,
-		BirthDate:     req.BirthDate,
+		Id:          Id,
+		Name:        req.Name,
+		LastName:    req.LastName,
+		FatherName:  req.FatherName,
+		PhoneNumber: req.PhoneNumber,
+		Address:     req.Address,
+		BirthDate:   req.BirthDate,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"error" : "Failed to create client",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to create client",
 		})
 		h.logger.Error("Failed to create client")
 		return
 	}
-	
+
 	c.JSON(http.StatusCreated, response)
 }
 
@@ -63,11 +63,10 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 // @Router /v1/client [get]
 func (h *handlerV1) GetClient(c *gin.Context) {
 	id := c.Query("id")
-
 	response, err := h.storage.Client().GetClient(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error" : "Failed to get client",
+			"error": "Failed to get client",
 		})
 		h.logger.Error("Failed to get client")
 		return
@@ -75,6 +74,59 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+// GetClient
+// @Summary GetClient
+// @Description Api for get client
+// @Tags client
+// @Accept json
+// @Produce json
+// @Param id query string true "id"
+// @Param page query string true "page"
+// @Param limit query string true "limit"
+// @Success 200 {object} models.Client
+// @Failure 400 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /v1/clientappointment [get]
+// func (h *handlerV1) GetClientWithAppointments(c *gin.Context) {
+// 	id := c.Query("id")
+// 	page := c.Query("page")
+// 	limit := c.Query("limit")
+// 	fmt.Print(page, limit)
+// 	respClient, err := h.storage.Client().GetClient(id)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error" : "Failed to get client",
+// 		})
+// 		h.logger.Error("Failed to get client")
+// 		return
+// 	}
+// 	respAppointment, err := h.storage.Appointment().GetAppointmentsWithClientId(id, cast.ToInt(page), cast.ToInt(limit))
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error" : "Failed to get client's appointment",
+// 		})
+// 		h.logger.Error("Failed to get client's appointment")
+// 		return
+// 	}
+// 	response := models.Client{
+// 		Id: respClient.Id,
+// 		Name: respClient.Name,
+// 		LastName: respClient.LastName,
+// 		FatherName: respClient.FatherName,
+// 		PhoneNumber: respClient.PhoneNumber,
+// 		Address: respClient.Address,
+// 		BirthDate: respClient.BirthDate,
+// 		AllAppointments: []models.Appointment{
+// 			models.Appointment{
+// 				Id: respAppointment.Id,
+// 				ClientId: respAppointment.C,
+// 			}
+// 		},
+// 	}
+
+// 	c.JSON(http.StatusOK, response)
+// }
 
 // UpdateClient
 // @Summary UpdateClient
@@ -97,17 +149,17 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 	}
 
 	response, err := h.storage.Client().UpdateClient(&repo.Client{
-		Id: client.Id,
-		Name: client.Name,
-		LastName: client.LastName,
-		FatherName: client.FatherName,
+		Id:          client.Id,
+		Name:        client.Name,
+		LastName:    client.LastName,
+		FatherName:  client.FatherName,
 		PhoneNumber: client.PhoneNumber,
-		Address: client.Address,
-		BirthDate: client.BirthDate,
+		Address:     client.Address,
+		BirthDate:   client.BirthDate,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error" : "Failed to update client",
+			"error": "Failed to update client",
 		})
 		h.logger.Error("Failed to update client")
 		return
@@ -132,7 +184,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 	response, err := h.storage.Client().DeleteClient(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error" : "Failed to delete client",
+			"error": "Failed to delete client",
 		})
 		h.logger.Error("Failed to delete client")
 		return
@@ -153,17 +205,17 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /v1/clients [get]
-func (h *handlerV1) GetAllClients(c * gin.Context) {
+func (h *handlerV1) GetAllClients(c *gin.Context) {
 	page := c.Query("page")
 	limit := c.Query("limit")
 
 	response, err := h.storage.Client().GetAllClients(&repo.GetAllClient{
-		Page: cast.ToInt(page),
+		Page:  cast.ToInt(page),
 		Limit: cast.ToInt(limit),
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error" : "Failed to get all clients",
+			"error": "Failed to get all clients",
 		})
 		h.logger.Error("Failed to get all clients")
 		return
@@ -192,12 +244,11 @@ func (h *handlerV1) GetAllClientsCount(c *gin.Context) {
 	resp, err := h.storage.Client().GetAllClientsCount()
 	if err != nil {
 		log.Println("Failed to get all clietns count")
-		return 
+		return
 	}
-	
+
 	c.JSON(http.StatusOK, resp)
 }
-
 
 // SearchingClients
 // @Summary SearchingClients
@@ -210,12 +261,12 @@ func (h *handlerV1) GetAllClientsCount(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /v1/search [get]
-func(h *handlerV1) SearchClients(c *gin.Context) {
+func (h *handlerV1) SearchClients(c *gin.Context) {
 	str := c.Query("str")
 	response, err := h.storage.Client().SearchClients(str)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"error" : "Failed to search clients",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to search clients",
 		})
 		log.Println("Failed to search clients", err)
 		return

@@ -182,13 +182,17 @@ func (h *handlerV1) GetAllAppointments(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param integer query string true "integer"
+// @Param page query string true "page"
+// @Param limit query string true "limit"
 // @Success 200 {object} models.AllAppointments
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /v1/appointmentsdate [get]
 func (h *handlerV1) GetAppointmentsWithDate(c *gin.Context) {
 	integer := c.Query("integer")
-	response, err := h.storage.Appointment().GetAppointmentsWithDate(cast.ToInt(integer))
+	page := c.Query("page")
+	limit := c.Query("limit")
+	response, err := h.storage.Appointment().GetAppointmentsWithDate(cast.ToInt(integer), cast.ToInt(page), cast.ToInt(limit))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get appointments with date",
@@ -214,13 +218,17 @@ func (h *handlerV1) GetAppointmentsWithDate(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param client_id query string true "client_id"
+// @Param page query string true "page"
+// @Param limit query string true "limit"
 // @Success 200 {object} models.AllAppointments
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /v1/appointmentid [get]
 func (h *handlerV1) GetAppointmentWithClientId(c *gin.Context) {
 	client_id := c.Query("client_id")
-	response, err := h.storage.Appointment().GetAppointmentsWithClientId(client_id)
+	page := c.Query("page")
+	limit := c.Query("limit")
+	response, err := h.storage.Appointment().GetAppointmentsWithClientId(client_id, cast.ToInt(page), cast.ToInt(limit))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error" : "Failed to get appointment with client id",

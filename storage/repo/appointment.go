@@ -24,6 +24,6 @@ type NewAppointmentI interface {
 	UpdateAppointment(*Appointment)(*Appointment, error)
 	DeleteAppointment(id string)(bool, error)
 	GetAllAppointments(*GetAllAppointment)(*AllAppointments, error)
-	GetAppointmentsWithDate(req int) (*AllAppointments, error)
-	GetAppointmentsWithClientId(id string) (*AllAppointments, error)
+	GetAppointmentsWithDate(req, page, limit int) (*AllAppointments, error)
+	GetAppointmentsWithClientId(id string, page, limit int) ([]Appointment, error)
 }

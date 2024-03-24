@@ -32,6 +32,10 @@ definitions:
     properties:
       address:
         type: string
+      allAppointments:
+        items:
+          $ref: '#/definitions/models.Appointment'
+        type: array
       birthDate:
         type: string
       fatherName:
@@ -249,6 +253,16 @@ paths:
         name: client_id
         required: true
         type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -340,6 +354,16 @@ paths:
       - description: integer
         in: query
         name: integer
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
         required: true
         type: string
       produces:

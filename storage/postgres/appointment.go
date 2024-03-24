@@ -216,10 +216,11 @@ func (h *appoinmentRepo) GetAllAppointments(req *repo.GetAllAppointment) (*repo.
 	return &AllAppointments, nil
 }
 
-func (h *appoinmentRepo) GetAppointmentsWithDate(req int) (*repo.AllAppointments, error) {
+func (h *appoinmentRepo) GetAppointmentsWithDate(req, page, limit int) (*repo.AllAppointments, error) {
 	now := time.Now().Format("2006-01-02")
 	to := time.Now().AddDate(0, 0, req).Format("2006-01-02")
 
+	offset := limit * (page - 1)
 	query := `
 	SELECT 
 		id,
@@ -231,9 +232,11 @@ func (h *appoinmentRepo) GetAppointmentsWithDate(req int) (*repo.AllAppointments
 	FROM 
 		appointments
 	WHERE 
-		date >= '%` + now + `%' AND date < '%` + to + `%' AND deleted_at IS NULL`
+		date >= '%` + now + `%' AND date < '%` + to + `%' AND deleted_at IS NULL
+	LIMIT $1
+	OFFSET $2`
 
-	rows, err := h.db.Query(query)
+	rows, err := h.db.Query(query, limit, offset)
 	if err != nil {
 		log.Println("Error get appointments with date", err)
 		return nil, err
@@ -259,7 +262,7 @@ func (h *appoinmentRepo) GetAppointmentsWithDate(req int) (*repo.AllAppointments
 	return &appointments, nil
 }
 
-func (h *appoinmentRepo) GetAppointmentsWithClientId(id string) (*repo.AllAppointments, error) {
+func (h *appoinmentRepo) GetAppointmentsWithClientId(id string, page, limit int) ([]repo.Appointment, error) {
 	query := `
 	SELECT 
 		id,
@@ -273,15 +276,17 @@ func (h *appoinmentRepo) GetAppointmentsWithClientId(id string) (*repo.AllAppoin
 	WHERE
 		client_id = $1
 	AND 
-		deleted_at IS NULL`
-	
-	rows, err := h.db.Query(query, id)
+		deleted_at IS NULL
+	LIMIT $2
+	OFFSET $3`
+	offset := limit * (page - 1)
+	rows, err := h.db.Query(query, id, limit, offset)
 	if err != nil {
 		log.Println("Error to get appointment with course_id", err)
 		return nil, err
 	}
-	
-	var appointments repo.AllAppointments
+
+	var appointments []repo.Appointment
 	for rows.Next() {
 		var appointment repo.Appointment
 		err = rows.Scan(
@@ -296,8 +301,8 @@ func (h *appoinmentRepo) GetAppointmentsWithClientId(id string) (*repo.AllAppoin
 			log.Println("Error to get appointment with course_id", err)
 			return nil, err
 		}
-		appointments.Appointment = append(appointments.Appointment, &appointment)
+		appointments = append(appointments, appointment)
 	}
 
-	return &appointments, nil
+	return appointments, nil
 }

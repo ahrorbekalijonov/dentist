@@ -92,6 +92,22 @@ func (h *clientRepo) DeleteClient(id string) (bool, error) {
 		tx.Rollback()
 		return false, err
 	}
+	query2 := `
+	UPDATE
+		appointments
+	SET 
+		deleted_at = CURRENT_TIMESTAMP
+	WHERE 
+		client_id = $1
+	AND
+		deleted_at IS NULL`
+	_, err = tx.Exec(query2, id)
+	if err != nil {
+		log.Println("Error to delete client's appointments in database: ", err)
+		tx.Rollback()
+		return false, err
+	}
+
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
@@ -118,13 +134,9 @@ func (h *clientRepo) GetClient(id string) (*repo.Client, error) {
 		id = $1
 	AND 
 	    deleted_at IS NULL`
-	tx, err := h.db.Begin()
-	if err != nil {
-		log.Println("Error creating transaction get client: ", err)
-		return nil, err
-	}
+	
 	var user repo.Client
-	err = tx.QueryRow(query, id).Scan(
+	err := h.db.QueryRow(query, id).Scan(
 		&user.Id,
 		&user.Name,
 		&user.LastName,
@@ -135,7 +147,6 @@ func (h *clientRepo) GetClient(id string) (*repo.Client, error) {
 	)
 	if err != nil {
 		log.Println("Error to get client in database: ", err)
-		tx.Rollback()
 		return nil, err
 	}
 

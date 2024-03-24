@@ -209,6 +209,20 @@ const docTemplate = `{
                         "name": "client_id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -348,6 +362,20 @@ const docTemplate = `{
                         "type": "string",
                         "description": "integer",
                         "name": "integer",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     }
@@ -731,6 +759,12 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "allAppointments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Appointment"
+                    }
+                },
                 "birthDate": {
                     "type": "string"
                 },
@@ -875,8 +909,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "Dentist-backend",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

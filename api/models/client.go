@@ -8,6 +8,7 @@ type Client struct {
 	PhoneNumber string
 	Address     string
 	BirthDate   string
+	AllAppointments []Appointment
 }
 
 type AllClients struct {
