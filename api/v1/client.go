@@ -76,9 +76,9 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// GetClient
-// @Summary GetClient
-// @Description Api for get client
+// GetClientWithAppointments
+// @Summary GetClientWithAppointments
+// @Description Api for get client with appointments
 // @Tags client
 // @Accept json
 // @Produce json

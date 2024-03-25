@@ -518,7 +518,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Api for get client
+      description: Api for get client with appointments
       parameters:
       - description: id
         in: query
@@ -550,7 +550,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Error'
-      summary: GetClient
+      summary: GetClientWithAppointments
       tags:
       - client
   /v1/clients:

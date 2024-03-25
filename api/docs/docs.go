@@ -578,7 +578,7 @@ const docTemplate = `{
         },
         "/v1/clientappointment": {
             "get": {
-                "description": "Api for get client",
+                "description": "Api for get client with appointments",
                 "consumes": [
                     "application/json"
                 ],
@@ -588,7 +588,7 @@ const docTemplate = `{
                 "tags": [
                     "client"
                 ],
-                "summary": "GetClient",
+                "summary": "GetClientWithAppointments",
                 "parameters": [
                     {
                         "type": "string",
