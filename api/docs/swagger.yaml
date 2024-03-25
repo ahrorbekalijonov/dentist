@@ -34,7 +34,7 @@ definitions:
         type: string
       allAppointments:
         items:
-          $ref: '#/definitions/models.Appointment'
+          $ref: '#/definitions/repo.Appointment'
         type: array
       birthDate:
         type: string
@@ -119,6 +119,21 @@ definitions:
   models.StandartError:
     properties:
       error:
+        type: string
+    type: object
+  repo.Appointment:
+    properties:
+      amount:
+        type: integer
+      clientId:
+        type: string
+      date:
+        type: string
+      diagnostics:
+        type: string
+      id:
+        type: string
+      treatment:
         type: string
     type: object
 info:
@@ -497,6 +512,45 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: UpdateClient
+      tags:
+      - client
+  /v1/clientappointment:
+    get:
+      consumes:
+      - application/json
+      description: Api for get client
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: GetClient
       tags:
       - client
   /v1/clients:

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -88,45 +89,39 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /v1/clientappointment [get]
-// func (h *handlerV1) GetClientWithAppointments(c *gin.Context) {
-// 	id := c.Query("id")
-// 	page := c.Query("page")
-// 	limit := c.Query("limit")
-// 	fmt.Print(page, limit)
-// 	respClient, err := h.storage.Client().GetClient(id)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"error" : "Failed to get client",
-// 		})
-// 		h.logger.Error("Failed to get client")
-// 		return
-// 	}
-// 	respAppointment, err := h.storage.Appointment().GetAppointmentsWithClientId(id, cast.ToInt(page), cast.ToInt(limit))
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"error" : "Failed to get client's appointment",
-// 		})
-// 		h.logger.Error("Failed to get client's appointment")
-// 		return
-// 	}
-// 	response := models.Client{
-// 		Id: respClient.Id,
-// 		Name: respClient.Name,
-// 		LastName: respClient.LastName,
-// 		FatherName: respClient.FatherName,
-// 		PhoneNumber: respClient.PhoneNumber,
-// 		Address: respClient.Address,
-// 		BirthDate: respClient.BirthDate,
-// 		AllAppointments: []models.Appointment{
-// 			models.Appointment{
-// 				Id: respAppointment.Id,
-// 				ClientId: respAppointment.C,
-// 			}
-// 		},
-// 	}
+func (h *handlerV1) GetClientWithAppointments(c *gin.Context) {
+	id := c.Query("id")
+	page := c.Query("page")
+	limit := c.Query("limit")
+	respClient, err := h.storage.Client().GetClient(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get client",
+		})
+		h.logger.Error("Failed to get client")
+		return
+	}
+	respAppointment, err := h.storage.Appointment().GetAppointmentsWithClientId(id, cast.ToInt(page), cast.ToInt(limit))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to get client's appointment",
+		})
+		h.logger.Error("Failed to get client's appointment")
+		return
+	}
+	response := models.Client{
+		Id:              respClient.Id,
+		Name:            respClient.Name,
+		LastName:        respClient.LastName,
+		FatherName:      respClient.FatherName,
+		PhoneNumber:     respClient.PhoneNumber,
+		Address:         respClient.Address,
+		BirthDate:       respClient.BirthDate,
+		AllAppointments: respAppointment,
+	}
 
-// 	c.JSON(http.StatusOK, response)
-// }
+	c.JSON(http.StatusOK, response)
+}
 
 // UpdateClient
 // @Summary UpdateClient
@@ -226,6 +221,7 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(response)
 
 	c.JSON(http.StatusOK, response)
 }

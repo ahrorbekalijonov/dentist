@@ -1,5 +1,7 @@
 package models
 
+import "github.com/dentist/storage/repo"
+
 type Client struct {
 	Id          string
 	Name        string
@@ -8,7 +10,7 @@ type Client struct {
 	PhoneNumber string
 	Address     string
 	BirthDate   string
-	AllAppointments []Appointment
+	AllAppointments []repo.Appointment
 }
 
 type AllClients struct {

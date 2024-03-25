@@ -17,13 +17,13 @@ type RoutOptions struct {
 	Storage storage.StorageI
 }
 
-//New...
+// New...
 // @Title           Dentist
 // @Version         1.0
 // @Description     Dentist-backend
 func New(opts RoutOptions) *gin.Engine {
 	router := gin.Default()
-	
+
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
 	corsConfig.AllowCredentials = true
@@ -32,7 +32,7 @@ func New(opts RoutOptions) *gin.Engine {
 
 	handlerV1 := v1.New(&v1.HandlerV1Options{
 		Storage: opts.Storage,
-		Cfg: opts.Cfg,
+		Cfg:     opts.Cfg,
 	})
 
 	router.Use(gin.Recovery())
@@ -47,6 +47,7 @@ func New(opts RoutOptions) *gin.Engine {
 	v1.GET("/clients", handlerV1.GetAllClients)
 	v1.GET("/count", handlerV1.GetAllClientsCount)
 	v1.GET("/search", handlerV1.SearchClients)
+	v1.GET("/clientappointment", handlerV1.GetClientWithAppointments)
 
 	//appointment...
 	v1.POST("/appointment", handlerV1.CreateAppointment)
@@ -57,7 +58,6 @@ func New(opts RoutOptions) *gin.Engine {
 	v1.GET("/appointmentsdate", handlerV1.GetAppointmentsWithDate)
 	v1.GET("/appointmentid", handlerV1.GetAppointmentWithClientId)
 	v1.POST("/appointmentnew", handlerV1.CreateAppointmentWithClient)
-
 
 	v1.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

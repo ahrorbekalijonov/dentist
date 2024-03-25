@@ -568,6 +568,64 @@
                 }
             }
         },
+        "/v1/clientappointment": {
+            "get": {
+                "description": "Api for get client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "GetClient",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/clients": {
             "get": {
                 "description": "Api for get all clients",
@@ -754,7 +812,7 @@
                 "allAppointments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Appointment"
+                        "$ref": "#/definitions/repo.Appointment"
                     }
                 },
                 "birthDate": {
@@ -884,6 +942,29 @@
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "repo.Appointment": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "clientId": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "diagnostics": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "treatment": {
                     "type": "string"
                 }
             }
