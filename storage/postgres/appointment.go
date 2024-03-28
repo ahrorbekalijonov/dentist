@@ -19,6 +19,7 @@ func NewAppointmentRepo(db *sqlx.DB) repo.NewAppointmentI {
 	}
 }
 
+//This method create a new appointment
 func (h *appoinmentRepo) CreateAppointment(req *repo.Appointment) (*repo.Appointment, error) {
 	query := `
 	INSERT INTO 
@@ -72,6 +73,7 @@ func (h *appoinmentRepo) CreateAppointment(req *repo.Appointment) (*repo.Appoint
 	return &user, nil
 }
 
+//This method delete appointment with id
 func (h *appoinmentRepo) DeleteAppointment(id string) (bool, error) {
 	query := `
 	UPDATE 
@@ -103,6 +105,7 @@ func (h *appoinmentRepo) DeleteAppointment(id string) (bool, error) {
 	return true, nil
 }
 
+//This method get appointment with id
 func (h *appoinmentRepo) GetAppointment(id string) (*repo.Appointment, error) {
 	query := `
 	SELECT 
@@ -135,6 +138,7 @@ func (h *appoinmentRepo) GetAppointment(id string) (*repo.Appointment, error) {
 	return &appointment, nil
 }
 
+//This method update appointment with id
 func (h *appoinmentRepo) UpdateAppointment(req *repo.Appointment) (*repo.Appointment, error) {
 	query := `
 	UPDATE 
@@ -174,6 +178,7 @@ func (h *appoinmentRepo) UpdateAppointment(req *repo.Appointment) (*repo.Appoint
 	return &user, nil
 }
 
+//This method get all appointments with page and limit
 func (h *appoinmentRepo) GetAllAppointments(req *repo.GetAllAppointment) (*repo.AllAppointments, error) {
 	query := `
 	SELECT
@@ -187,6 +192,7 @@ func (h *appoinmentRepo) GetAllAppointments(req *repo.GetAllAppointment) (*repo.
 	    appointments
 	WHERE 
 	    deleted_at IS NULL
+	ORDER BY date
 	LIMIT $1
 	OFFSET $2`
 	offset := req.Limit * (req.Page - 1)
@@ -210,15 +216,22 @@ func (h *appoinmentRepo) GetAllAppointments(req *repo.GetAllAppointment) (*repo.
 			log.Println("Error to get all appointments: ", err)
 			return nil, err
 		}
+		defer rows.Close()
 		AllAppointments.Appointment = append(AllAppointments.Appointment, &appointment)
 	}
 
 	return &AllAppointments, nil
 }
 
+//this method takes appointments by number, that is, if a positive number is entered, 
+// it will take the data of that number of days from today, if it is negative, 
+// it will take the data of the previous day
 func (h *appoinmentRepo) GetAppointmentsWithDate(req, page, limit int) (*repo.AllAppointments, error) {
 	now := time.Now().Format("2006-01-02")
 	to := time.Now().AddDate(0, 0, req).Format("2006-01-02")
+	if req < 0 {
+		now, to = to, now
+	}
 
 	offset := limit * (page - 1)
 	query := `
@@ -232,11 +245,12 @@ func (h *appoinmentRepo) GetAppointmentsWithDate(req, page, limit int) (*repo.Al
 	FROM 
 		appointments
 	WHERE 
-		date >= '%` + now + `%' AND date < '%` + to + `%' AND deleted_at IS NULL
-	LIMIT $1
-	OFFSET $2`
+		date >= $1 AND date < $2 AND deleted_at IS NULL
+	ORDER BY date
+	LIMIT $3
+	OFFSET $4`
 
-	rows, err := h.db.Query(query, limit, offset)
+	rows, err := h.db.Query(query, now, to, limit, offset)
 	if err != nil {
 		log.Println("Error get appointments with date", err)
 		return nil, err
@@ -246,8 +260,8 @@ func (h *appoinmentRepo) GetAppointmentsWithDate(req, page, limit int) (*repo.Al
 		var appointment repo.Appointment
 		err = rows.Scan(
 			&appointment.Id,
-			&appointment.Date,
 			&appointment.ClientId,
+			&appointment.Date,
 			&appointment.Diagnostics,
 			&appointment.Treatment,
 			&appointment.Amount,
@@ -257,11 +271,13 @@ func (h *appoinmentRepo) GetAppointmentsWithDate(req, page, limit int) (*repo.Al
 			return nil, err
 		}
 		appointments.Appointment = append(appointments.Appointment, &appointment)
+		defer rows.Close()
 	}
 
 	return &appointments, nil
 }
 
+//This method get appointments with client id
 func (h *appoinmentRepo) GetAppointmentsWithClientId(id string, page, limit int) ([]repo.Appointment, error) {
 	query := `
 	SELECT 
@@ -276,9 +292,10 @@ func (h *appoinmentRepo) GetAppointmentsWithClientId(id string, page, limit int)
 	WHERE
 		client_id = $1
 	AND 
-		deleted_at IS NULL
+		deleted_at IS NULL 
+	ORDER BY date
 	LIMIT $2
-	OFFSET $3`
+	OFFSET $3 `
 	offset := limit * (page - 1)
 	rows, err := h.db.Query(query, id, limit, offset)
 	if err != nil {
@@ -301,6 +318,7 @@ func (h *appoinmentRepo) GetAppointmentsWithClientId(id string, page, limit int)
 			log.Println("Error to get appointment with course_id", err)
 			return nil, err
 		}
+		defer rows.Close()
 		appointments = append(appointments, appointment)
 	}
 

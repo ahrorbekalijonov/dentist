@@ -267,6 +267,12 @@ func (h *handlerV1) SearchClients(c *gin.Context) {
 		log.Println("Failed to search clients", err)
 		return
 	}
+	if len(response.Clients) == 0 {
+		c.JSON(http.StatusOK, models.AllClients{
+			Clients: []*models.Client{},
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, response)
 }

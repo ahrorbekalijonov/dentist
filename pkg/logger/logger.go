@@ -33,21 +33,19 @@ type Logger interface {
 	Fatal(msg string, fields ...Field)
 }
 
-type loggerImpl struct {
+type LoggerImpl struct {
 	zap *zap.Logger
 }
 
-var (
-	customTimeFormat string
-)
+var customTimeFormat string
 
 // New ...
-func New(level string, namespace string) Logger {
+func New(level, namespace string) *LoggerImpl {
 	if level == "" {
 		level = LevelInfo
 	}
 
-	logger := loggerImpl{
+	logger := LoggerImpl{
 		zap: newZapLogger(level, time.RFC3339),
 	}
 
@@ -58,30 +56,30 @@ func New(level string, namespace string) Logger {
 	return &logger
 }
 
-func (l *loggerImpl) Debug(msg string, fields ...Field) {
+func (l *LoggerImpl) Debug(msg string, fields ...Field) {
 	l.zap.Debug(msg, fields...)
 }
 
-func (l *loggerImpl) Info(msg string, fields ...Field) {
+func (l *LoggerImpl) Info(msg string, fields ...Field) {
 	l.zap.Info(msg, fields...)
 }
 
-func (l *loggerImpl) Warn(msg string, fields ...Field) {
+func (l *LoggerImpl) Warn(msg string, fields ...Field) {
 	l.zap.Warn(msg, fields...)
 }
 
-func (l *loggerImpl) Error(msg string, fields ...Field) {
+func (l *LoggerImpl) Error(msg string, fields ...Field) {
 	l.zap.Error(msg, fields...)
 }
 
-func (l *loggerImpl) Fatal(msg string, fields ...Field) {
+func (l *LoggerImpl) Fatal(msg string, fields ...Field) {
 	l.zap.Fatal(msg, fields...)
 }
 
 // GetNamed ...
 func GetNamed(l Logger, name string) Logger {
 	switch v := l.(type) {
-	case *loggerImpl:
+	case *LoggerImpl:
 		v.zap = v.zap.Named(name)
 		return v
 	default:
@@ -93,8 +91,8 @@ func GetNamed(l Logger, name string) Logger {
 // WithFields ...
 func WithFields(l Logger, fields ...Field) Logger {
 	switch v := l.(type) {
-	case *loggerImpl:
-		return &loggerImpl{
+	case *LoggerImpl:
+		return &LoggerImpl{
 			zap: v.zap.With(fields...),
 		}
 	default:
@@ -106,7 +104,7 @@ func WithFields(l Logger, fields ...Field) Logger {
 // Cleanup ...
 func Cleanup(l Logger) error {
 	switch v := l.(type) {
-	case *loggerImpl:
+	case *LoggerImpl:
 		return v.zap.Sync()
 	default:
 		l.Info("logger.Cleanup: invalid logger type")
